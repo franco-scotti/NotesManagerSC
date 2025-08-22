@@ -6,11 +6,8 @@ import 'package:scotti_seguros/cubits/home_page/notes_manager_state.dart';
 import 'package:scotti_seguros/models/notes_manager/notes_manager.dart';
 
 class CardAddNew extends StatefulWidget {
-  final double cardWidth;
-
   const CardAddNew({
     super.key,
-    required this.cardWidth,
   });
 
   @override
@@ -31,10 +28,8 @@ class _CardAddNewState extends State<CardAddNew> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NotesManagerCubit, NotesManagerState>(
-        builder: (context, state) {
-      return Container(
-          width: widget.cardWidth,
-          padding: const EdgeInsets.all(25),
+      builder: (context, state) {
+        return Container(
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: const BorderRadius.all(
@@ -43,7 +38,7 @@ class _CardAddNewState extends State<CardAddNew> {
           ),
           child: !state.isAddingNew
               ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     IconButton(
                       icon: Icon(Icons.add),
@@ -53,71 +48,86 @@ class _CardAddNewState extends State<CardAddNew> {
                             .setisAddingNew(true);
                       },
                     ),
-                    const SizedBox(height: 10),
                     Text('Adicionar'),
                   ],
                 )
               : Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    TextField(
-                      controller: _titleController,
-                      decoration: InputDecoration(
-                        labelText: 'Título',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.cancel),
+                          color: AppColors.primary,
+                          iconSize: 28,
+                          onPressed: () {
+                            BlocProvider.of<NotesManagerCubit>(context)
+                                .setisAddingNew(false);
+                          },
                         ),
-                      ),
+                      ],
                     ),
-                    SizedBox(height: 20),
-                    TextField(
-                      controller: _descriptionController,
-                      maxLines: 3,
-                      decoration: InputDecoration(
-                        labelText: 'Descrição',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 25),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: 15),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                    Padding(
+                      padding: const EdgeInsets.all(25),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          TextField(
+                            controller: _titleController,
+                            decoration: InputDecoration(
+                              labelText: 'Título',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
                           ),
-                          backgroundColor: AppColors.primary,
-                          elevation: 3,
-                        ),
-                        onPressed: () {
-                          var note = Note(
-                              title: _titleController.text,
-                              description: _descriptionController.text);
-                          BlocProvider.of<NotesManagerCubit>(context)
-                              .addNote(note);
-                          BlocProvider.of<NotesManagerCubit>(context)
-                              .getAllNotes();
-                        },
-                        child: Text(
-                          'Salvar',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        ),
+                          SizedBox(height: 10),
+                          TextField(
+                            controller: _descriptionController,
+                            maxLines: 3,
+                            decoration: InputDecoration(
+                              labelText: 'Descrição',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 25),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                backgroundColor: AppColors.primary,
+                                elevation: 3,
+                              ),
+                              onPressed: () {
+                                var note = Note(
+                                    title: _titleController.text,
+                                    description: _descriptionController.text);
+                                BlocProvider.of<NotesManagerCubit>(context)
+                                    .addNote(note);
+                                BlocProvider.of<NotesManagerCubit>(context)
+                                    .getAllNotes();
+                                _titleController.clear();
+                                _descriptionController.clear();
+                              },
+                              child: Text(
+                                'Salvar',
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.cancel),
-                      color: AppColors.primary,
-                      iconSize: 28,
-                      onPressed: () {
-                        BlocProvider.of<NotesManagerCubit>(context)
-                            .setisAddingNew(false);
-                      },
                     ),
                   ],
-                ));
-    });
+                ),
+        );
+      },
+    );
   }
 }

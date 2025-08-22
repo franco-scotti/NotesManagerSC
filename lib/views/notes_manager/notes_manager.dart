@@ -3,8 +3,8 @@ import 'package:scotti_seguros/consts/app_colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scotti_seguros/cubits/home_page/notes_manager_cubit.dart';
 import 'package:scotti_seguros/cubits/home_page/notes_manager_state.dart';
-import 'package:scotti_seguros/models/notes_manager/notes_manager.dart';
 import 'package:scotti_seguros/views/notes_manager/widgets/card_add_new.dart';
+import 'package:scotti_seguros/views/notes_manager/widgets/card_note.dart';
 
 class NotesManager extends StatefulWidget {
   const NotesManager({super.key});
@@ -27,14 +27,12 @@ class _NotesManagerState extends State<NotesManager> {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
-    var screenWidth = screenSize.width;
+    int crossAxisCount = _getCrossCount(screenSize.width);
 
-    int crossAxisCount = screenWidth > 600 ? 4 : 2;
-    double cardWidth = screenWidth / crossAxisCount - 30;
     return BlocBuilder<NotesManagerCubit, NotesManagerState>(
         builder: (context, state) {
       return Scaffold(
-        backgroundColor: Color(0xFF414988),
+        backgroundColor: AppColors.primary,
         appBar: AppBar(
           title: Expanded(
             child: Center(
@@ -59,16 +57,13 @@ class _NotesManagerState extends State<NotesManager> {
           crossAxisSpacing: 10,
           mainAxisSpacing: 10,
           children: [
-            CardAddNew(
-              cardWidth: cardWidth,
-            ),
+            CardAddNew(),
             ...List.generate(
               state.notes.length,
-              (index) => _cardNotes(
-                state.notes[index].title,
-                state.notes[index].description,
-                Icons.info,
-                cardWidth: cardWidth,
+              (index) => CardNote(
+                title: state.notes[index].title,
+                description: state.notes[index].description,
+                icon: Icons.info,
               ),
             ),
           ],
@@ -77,61 +72,15 @@ class _NotesManagerState extends State<NotesManager> {
     });
   }
 
-  Widget _cardNotes(
-    String title,
-    String description,
-    IconData icon, {
-    required double cardWidth,
-  }) {
-    return GestureDetector(
-      onTap: () => {},
-      child: Container(
-        width: cardWidth,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(20),
-          ),
-        ),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                IconButton(
-                  icon: Icon(Icons.cancel),
-                  color: AppColors.secondary,
-                  iconSize: 28,
-                  onPressed: () {
-                    BlocProvider.of<NotesManagerCubit>(context)
-                        .removeNote(title);
-                  },
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(25),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(
-                    icon,
-                    color: AppColors.primary,
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    title,
-                    style: TextStyle(fontSize: 15),
-                  ),
-                  Text(
-                    description,
-                    style: TextStyle(fontSize: 10),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  int _getCrossCount(double screenWidth) {
+    if (screenWidth > 1250) {
+      return 4;
+    } else if (screenWidth < 1250 && screenWidth > 950) {
+      return 3;
+    } else if (screenWidth < 950 && screenWidth > 690) {
+      return 2;
+    } else {
+      return 1;
+    }
   }
 }
