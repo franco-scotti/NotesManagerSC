@@ -13,26 +13,27 @@ class NotesManagerCubit extends Cubit<NotesManagerState> {
   }
 
   Future<void> getAllNotes() async {
-    final box = Hive.box(notesBox);
-    final notes = box.values.map((e) => Note.fromMap(e)).toList();
+    final box = Hive.box<Note>(notesBox);
+    final notes = box.values.toList();
     emit(state.copyWith(notes: notes));
   }
 
   Future<void> addNote(Note note) async {
-    final box = Hive.box(notesBox);
-    await box.add(note.toMap());
+    final box = Hive.box<Note>(notesBox);
+    await box.add(note);
+    getAllNotes();
   }
 
   Future<void> removeNote(String title) async {
-    final box = Hive.box(notesBox);
-    final Map<dynamic, dynamic> allNotes = box.toMap();
+    final box = Hive.box<Note>(notesBox);
+    final keyToDelete = box.keys.firstWhere(
+      (key) => box.get(key)?.title == title,
+      orElse: () => null,
+    );
 
-    allNotes.forEach((key, value) {
-      if (value['title'] == title) {
-        box.delete(key);
-      }
-    });
-
-    getAllNotes();
+    if (keyToDelete != null) {
+      await box.delete(keyToDelete);
+      getAllNotes();
+    }
   }
 }
