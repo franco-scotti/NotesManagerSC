@@ -67,9 +67,7 @@ class _NotesManagerState extends State<NotesManager> {
             ...List.generate(
               state.notes.length,
               (index) => CardNote(
-                id: state.notes[index].id!,
-                title: state.notes[index].title,
-                description: state.notes[index].description,
+                note: state.notes[index],
                 icon: Icons.info,
               ),
             ),
@@ -80,9 +78,9 @@ class _NotesManagerState extends State<NotesManager> {
   }
 
   int _getCrossCount(double screenWidth) {
-    if (screenWidth > 1250) {
+    if (screenWidth > 1300) {
       return 4;
-    } else if (screenWidth < 1250 && screenWidth > 950) {
+    } else if (screenWidth < 1300 && screenWidth > 950) {
       return 3;
     } else if (screenWidth < 950 && screenWidth > 690) {
       return 2;

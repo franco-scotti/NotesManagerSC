@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:scotti_seguros/consts/app_colors.dart';
+import 'package:scotti_seguros/models/notes_manager/notes_manager.dart';
 
-class ViewNote extends StatefulWidget {
-  const ViewNote({super.key});
+class ViewNote extends StatelessWidget {
+  final Note note;
 
-  @override
-  State<ViewNote> createState() => _ViewNoteState();
-}
-
-class _ViewNoteState extends State<ViewNote> {
-  @override
-  void initState() {
-    super.initState();
-  }
+  const ViewNote({
+    super.key,
+    required this.note,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +32,14 @@ class _ViewNoteState extends State<ViewNote> {
           onPressed: () => {Navigator.pop(context)},
         ),
       ),
-      body: const Placeholder(),
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 12),
+        child: Column(
+          children: [
+            Text(note.title),
+          ],
+        ),
+      ),
     );
   }
 }

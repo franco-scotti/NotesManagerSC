@@ -3,18 +3,26 @@ import 'package:scotti_seguros/models/notes_manager/notes_manager.dart';
 
 class NotesManagerRepository {
   Future<int> addNote(Note note) async {
-    try {
-      final db = await Db.instance.database;
-      return await db.insert('note', note.toMap());
-    } catch (e) {
-      return 0;
-    }
+    final db = await Db.instance.database;
+    return await db.insert('note', note.toMap());
   }
 
   Future<List<Note>> getAllNotes() async {
     final db = await Db.instance.database;
     final result = await db.query('note');
     return result.map((map) => Note.fromMap(map)).toList();
+  }
+
+  Future<Note> getNoteById(int id) async {
+    final db = await Db.instance.database;
+
+    final result = await db.query(
+      'note',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    return Note.fromMap(result.first);
   }
 
   Future<int> updateNote(Note note) async {

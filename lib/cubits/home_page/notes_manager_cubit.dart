@@ -17,13 +17,13 @@ class NotesManagerCubit extends Cubit<NotesManagerState> {
     emit(state.copyWith(notes: notes));
   }
 
+  Future<Note> getNoteById(int id) async {
+    return await repository.getNoteById(id);
+  }
+
   Future<void> addNote(Note note) async {
-    try {
-      await repository.addNote(note);
-      await getAllNotes();
-    } catch (e) {
-      print(e);
-    }
+    await repository.addNote(note);
+    await getAllNotes();
   }
 
   Future<void> removeNote(int id) async {

@@ -2,18 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scotti_seguros/consts/app_colors.dart';
 import 'package:scotti_seguros/cubits/home_page/notes_manager_cubit.dart';
+import 'package:scotti_seguros/models/notes_manager/notes_manager.dart';
 import 'package:scotti_seguros/views/notes_manager/widgets/view_note.dart';
 
 class CardNote extends StatelessWidget {
-  final int id;
-  final String title;
-  final String description;
+  final Note note;
   final IconData icon;
 
   const CardNote({
-    required this.id,
-    required this.title,
-    required this.description,
+    required this.note,
     required this.icon,
     super.key,
   });
@@ -21,11 +18,15 @@ class CardNote extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
+        var searchedNote = await BlocProvider.of<NotesManagerCubit>(context)
+            .getNoteById(note.id!);
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ViewNote(),
+            builder: (context) => ViewNote(
+              note: searchedNote,
+            ),
           ),
         );
       },
@@ -45,7 +46,8 @@ class CardNote extends StatelessWidget {
                   color: AppColors.secondary,
                   iconSize: 28,
                   onPressed: () {
-                    BlocProvider.of<NotesManagerCubit>(context).removeNote(id);
+                    BlocProvider.of<NotesManagerCubit>(context)
+                        .removeNote(note.id!);
                   },
                 ),
               ],
@@ -61,14 +63,14 @@ class CardNote extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    title,
+                    note.title,
                     style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
                     height: 10,
                   ),
                   Text(
-                    description,
+                    note.description,
                     style: TextStyle(fontSize: 15),
                   ),
                 ],
