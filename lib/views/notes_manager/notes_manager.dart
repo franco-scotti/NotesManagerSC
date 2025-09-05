@@ -18,6 +18,12 @@ class _NotesManagerState extends State<NotesManager> {
   final TextEditingController _descriptionController = TextEditingController();
 
   @override
+  void initState() {
+    BlocProvider.of<NotesManagerCubit>(context).getAllNotes();
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
@@ -61,6 +67,7 @@ class _NotesManagerState extends State<NotesManager> {
             ...List.generate(
               state.notes.length,
               (index) => CardNote(
+                id: state.notes[index].id!,
                 title: state.notes[index].title,
                 description: state.notes[index].description,
                 icon: Icons.info,

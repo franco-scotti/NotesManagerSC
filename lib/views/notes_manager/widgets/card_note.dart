@@ -5,11 +5,13 @@ import 'package:scotti_seguros/cubits/home_page/notes_manager_cubit.dart';
 import 'package:scotti_seguros/views/notes_manager/widgets/view_note.dart';
 
 class CardNote extends StatelessWidget {
+  final int id;
   final String title;
   final String description;
   final IconData icon;
 
   const CardNote({
+    required this.id,
     required this.title,
     required this.description,
     required this.icon,
@@ -43,8 +45,7 @@ class CardNote extends StatelessWidget {
                   color: AppColors.secondary,
                   iconSize: 28,
                   onPressed: () {
-                    BlocProvider.of<NotesManagerCubit>(context)
-                        .removeNote(title);
+                    BlocProvider.of<NotesManagerCubit>(context).removeNote(id);
                   },
                 ),
               ],

@@ -1,39 +1,33 @@
 import 'package:bloc/bloc.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scotti_seguros/cubits/home_page/notes_manager_state.dart';
 import 'package:scotti_seguros/models/notes_manager/notes_manager.dart';
+import 'package:scotti_seguros/services/notes_manager/notes_manager_repository.dart';
 
 class NotesManagerCubit extends Cubit<NotesManagerState> {
-  static const notesBox = 'notesBox';
+  final NotesManagerRepository repository;
 
-  NotesManagerCubit() : super(const NotesManagerState());
+  NotesManagerCubit(this.repository) : super(const NotesManagerState());
 
   void setisAddingNew(bool value) {
     emit(state.copyWith(isAddingNew: value));
   }
 
   Future<void> getAllNotes() async {
-    final box = Hive.box<Note>(notesBox);
-    final notes = box.values.toList();
+    final notes = await repository.getAllNotes();
     emit(state.copyWith(notes: notes));
   }
 
   Future<void> addNote(Note note) async {
-    final box = Hive.box<Note>(notesBox);
-    await box.add(note);
-    getAllNotes();
+    try {
+      await repository.addNote(note);
+      await getAllNotes();
+    } catch (e) {
+      print(e);
+    }
   }
 
-  Future<void> removeNote(String title) async {
-    final box = Hive.box<Note>(notesBox);
-    final keyToDelete = box.keys.firstWhere(
-      (key) => box.get(key)?.title == title,
-      orElse: () => null,
-    );
-
-    if (keyToDelete != null) {
-      await box.delete(keyToDelete);
-      getAllNotes();
-    }
+  Future<void> removeNote(int id) async {
+    await repository.deleteNote(id);
+    await getAllNotes();
   }
 }
