@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:scotti_seguros/common/buttons/default_button.dart';
-import 'package:scotti_seguros/consts/app_colors.dart';
 import 'package:scotti_seguros/enums/semantic_type_enum.dart';
 
 class ShowDialogBox {

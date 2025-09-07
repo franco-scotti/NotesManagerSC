@@ -3,8 +3,8 @@ import 'package:scotti_seguros/consts/app_colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scotti_seguros/cubits/home_page/notes_manager_cubit.dart';
 import 'package:scotti_seguros/cubits/home_page/notes_manager_state.dart';
-import 'package:scotti_seguros/views/notes_manager/widgets/card_add_new.dart';
-import 'package:scotti_seguros/views/notes_manager/widgets/card_note.dart';
+import 'package:scotti_seguros/views/notes_manager/notes_manager/widgets/card_add_new.dart';
+import 'package:scotti_seguros/views/notes_manager/notes_manager/widgets/card_note.dart';
 
 class NotesManager extends StatefulWidget {
   const NotesManager({super.key});
@@ -40,12 +40,10 @@ class _NotesManagerState extends State<NotesManager> {
       return Scaffold(
         backgroundColor: AppColors.primary,
         appBar: AppBar(
-          title: Expanded(
-            child: Center(
-              child: Text(
-                'Scotti Seguros',
-                style: TextStyle(color: Colors.white),
-              ),
+          title: Center(
+            child: Text(
+              'Scotti Seguros',
+              style: TextStyle(color: Colors.white),
             ),
           ),
           backgroundColor: AppColors.primary,
@@ -54,7 +52,7 @@ class _NotesManagerState extends State<NotesManager> {
               Icons.menu,
               color: Colors.white,
             ),
-            onPressed: () => {},
+            onPressed: () {},
           ),
         ),
         body: GridView.count(

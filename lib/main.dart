@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scotti_seguros/cubits/home_page/notes_manager_cubit.dart';
 import 'package:scotti_seguros/services/notes_manager/notes_manager_repository.dart';
-import 'package:scotti_seguros/views/notes_manager/notes_manager.dart';
+import 'package:scotti_seguros/views/notes_manager/notes_manager/notes_manager.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() async {

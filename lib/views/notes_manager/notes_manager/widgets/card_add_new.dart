@@ -45,7 +45,7 @@ class _CardAddNewState extends State<CardAddNew> {
                       color: AppColors.secondary,
                       onPressed: () {
                         BlocProvider.of<NotesManagerCubit>(context)
-                            .setisAddingNew(true);
+                            .setIsAddingNew(true);
                       },
                     ),
                     Text('Adicionar'),
@@ -61,7 +61,7 @@ class _CardAddNewState extends State<CardAddNew> {
                           iconSize: 28,
                           onPressed: () {
                             BlocProvider.of<NotesManagerCubit>(context)
-                                .setisAddingNew(false);
+                                .setIsAddingNew(false);
                           },
                         ),
                       ],

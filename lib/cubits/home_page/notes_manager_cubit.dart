@@ -8,8 +8,12 @@ class NotesManagerCubit extends Cubit<NotesManagerState> {
 
   NotesManagerCubit(this.repository) : super(const NotesManagerState());
 
-  void setisAddingNew(bool value) {
+  void setIsAddingNew(bool value) {
     emit(state.copyWith(isAddingNew: value));
+  }
+
+  void setIsEditingTitle(bool value) {
+    emit(state.copyWith(isEditTitle: value));
   }
 
   Future<void> getAllNotes() async {
