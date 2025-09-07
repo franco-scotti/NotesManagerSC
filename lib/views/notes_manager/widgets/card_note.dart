@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scotti_seguros/common/functions/show_dialog.dart';
+import 'package:scotti_seguros/common/functions/show_snackbar.dart';
 import 'package:scotti_seguros/consts/app_colors.dart';
 import 'package:scotti_seguros/cubits/home_page/notes_manager_cubit.dart';
+import 'package:scotti_seguros/enums/semantic_type_enum.dart';
 import 'package:scotti_seguros/models/notes_manager/notes_manager.dart';
 import 'package:scotti_seguros/views/notes_manager/widgets/view_note.dart';
 
@@ -21,12 +24,13 @@ class CardNote extends StatelessWidget {
       onTap: () async {
         var searchedNote = await BlocProvider.of<NotesManagerCubit>(context)
             .getNoteById(note.id!);
+
+        if (!context.mounted) return;
+
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ViewNote(
-              note: searchedNote,
-            ),
+            builder: (context) => ViewNote(note: searchedNote),
           ),
         );
       },
@@ -46,8 +50,27 @@ class CardNote extends StatelessWidget {
                   color: AppColors.secondary,
                   iconSize: 28,
                   onPressed: () {
-                    BlocProvider.of<NotesManagerCubit>(context)
-                        .removeNote(note.id!);
+                    ShowDialogBox.show(
+                      context,
+                      title: 'Deseja mesmo deletar?',
+                      message: 'Esta ação não pode ser revertida.',
+                      semanticType: SemanticType.success,
+                      primaryButtonText: 'Deletar',
+                      primaryButtonColor: AppColors.errorDefault,
+                      onPrimaryButtonPressed: () async {
+                        await BlocProvider.of<NotesManagerCubit>(context)
+                            .removeNote(note.id!);
+                        Navigator.pop(context);
+                        ShowSnackbar.show(context,
+                            message: 'Nota Deletada com Sucesso',
+                            semanticType: SemanticType.success);
+                      },
+                      secondaryButtonText: 'Cancelar',
+                      secondaryButtonColor: AppColors.primary,
+                      onSecondaryButtonPressed: () {
+                        Navigator.pop(context);
+                      },
+                    );
                   },
                 ),
               ],

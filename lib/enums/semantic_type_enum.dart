@@ -1,0 +1,4 @@
+enum SemanticType {
+  success,
+  error,
+}

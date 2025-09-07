@@ -43,7 +43,7 @@ class _NotesManagerState extends State<NotesManager> {
           title: Expanded(
             child: Center(
               child: Text(
-                'scotti seguros',
+                'Scotti Seguros',
                 style: TextStyle(color: Colors.white),
               ),
             ),

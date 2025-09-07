@@ -26,6 +26,10 @@ class NotesManagerCubit extends Cubit<NotesManagerState> {
     await getAllNotes();
   }
 
+  Future<int> updateNote(Note note) async {
+    return await repository.updateNote(note);
+  }
+
   Future<void> removeNote(int id) async {
     await repository.deleteNote(id);
     await getAllNotes();
