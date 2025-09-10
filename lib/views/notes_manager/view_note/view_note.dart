@@ -11,11 +11,8 @@ import 'package:scotti_seguros/models/notes_manager/notes_manager.dart';
 import 'package:scotti_seguros/views/notes_manager/view_note/widgets/header_view_note.dart';
 
 class ViewNote extends StatefulWidget {
-  final Note note;
-
   const ViewNote({
     super.key,
-    required this.note,
   });
 
   @override
@@ -24,9 +21,18 @@ class ViewNote extends StatefulWidget {
 
 class _ViewNoteState extends State<ViewNote> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final observationController = TextEditingController(
-      text: widget.note.observation ?? "",
+      text: BlocProvider.of<NotesManagerCubit>(context)
+              .state
+              .selectedNote
+              .observation ??
+          "",
     );
 
     return Scaffold(
@@ -63,10 +69,7 @@ class _ViewNoteState extends State<ViewNote> {
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      HeaderViewNote(
-                        title: widget.note.title,
-                        description: widget.note.description,
-                      ),
+                      HeaderViewNote(),
                       SizedBox(height: 30),
                       TextField(
                         controller: observationController,
@@ -104,7 +107,7 @@ class _ViewNoteState extends State<ViewNote> {
                                 onPrimaryButtonPressed: () async {
                                   await BlocProvider.of<NotesManagerCubit>(
                                           context)
-                                      .removeNote(widget.note.id!);
+                                      .removeNote(state.selectedNote.id!);
                                   Navigator.pop(context);
                                   Navigator.pop(context);
                                   ShowSnackbar.show(context,
@@ -124,9 +127,9 @@ class _ViewNoteState extends State<ViewNote> {
                             backgroundColor: AppColors.primary,
                             onPressed: () async {
                               var updatedNote = Note(
-                                  id: widget.note.id,
-                                  title: widget.note.title,
-                                  description: widget.note.description,
+                                  id: state.selectedNote.id,
+                                  title: state.selectedNote.title,
+                                  description: state.selectedNote.description,
                                   observation: observationController.text);
                               var result =
                                   await BlocProvider.of<NotesManagerCubit>(

@@ -4,12 +4,19 @@ class Note {
   final String description;
   final String? observation;
 
-  Note({
+  const Note({
     this.id,
     required this.title,
     required this.description,
     this.observation,
   });
+
+  static const empty = Note(
+    id: null,
+    title: '',
+    description: '',
+    observation: '',
+  );
 
   Map<String, dynamic> toMap() {
     return {

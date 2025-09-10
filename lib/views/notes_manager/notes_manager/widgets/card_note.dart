@@ -6,33 +6,24 @@ import 'package:scotti_seguros/consts/app_colors.dart';
 import 'package:scotti_seguros/cubits/home_page/notes_manager_cubit.dart';
 import 'package:scotti_seguros/enums/semantic_type_enum.dart';
 import 'package:scotti_seguros/models/notes_manager/notes_manager.dart';
-import 'package:scotti_seguros/views/notes_manager/view_note/view_note.dart';
 
 class CardNote extends StatelessWidget {
+  final VoidCallback onPressed;
   final Note note;
   final IconData icon;
 
   const CardNote({
     required this.note,
     required this.icon,
+    required this.onPressed,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {
-        var searchedNote = await BlocProvider.of<NotesManagerCubit>(context)
-            .getNoteById(note.id!);
-
-        if (!context.mounted) return;
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ViewNote(note: searchedNote),
-          ),
-        );
+      onTap: () {
+        onPressed();
       },
       child: Container(
         decoration: BoxDecoration(

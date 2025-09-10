@@ -3,8 +3,10 @@ import 'package:scotti_seguros/consts/app_colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scotti_seguros/cubits/home_page/notes_manager_cubit.dart';
 import 'package:scotti_seguros/cubits/home_page/notes_manager_state.dart';
+import 'package:scotti_seguros/enums/status_base_enum.dart';
 import 'package:scotti_seguros/views/notes_manager/notes_manager/widgets/card_add_new.dart';
 import 'package:scotti_seguros/views/notes_manager/notes_manager/widgets/card_note.dart';
+import 'package:scotti_seguros/views/notes_manager/view_note/view_note.dart';
 
 class NotesManager extends StatefulWidget {
   const NotesManager({super.key});
@@ -35,8 +37,34 @@ class _NotesManagerState extends State<NotesManager> {
     var screenSize = MediaQuery.of(context).size;
     int crossAxisCount = _getCrossCount(screenSize.width);
 
-    return BlocBuilder<NotesManagerCubit, NotesManagerState>(
-        builder: (context, state) {
+    return BlocConsumer<NotesManagerCubit, NotesManagerState>(
+        listener: (context, state) {
+      // if (state.status == StatusBaseEnum.loading) {
+      //   showDialog(
+      //     context: context,
+      //     barrierDismissible: false,
+      //     builder: (_) => const Center(
+      //       child: CircularProgressIndicator(
+      //         strokeWidth: 6.0,
+      //         color: AppColors.secondary,
+      //       ),
+      //     ),
+      //   );
+      // } else {
+      //   Navigator.of(context, rootNavigator: true).maybePop();
+      // }
+
+      if (state.status == StatusBaseEnum.success) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ViewNote(),
+          ),
+        );
+        BlocProvider.of<NotesManagerCubit>(context)
+            .setStatus(StatusBaseEnum.initial);
+      }
+    }, builder: (context, state) {
       return Scaffold(
         backgroundColor: AppColors.primary,
         appBar: AppBar(
@@ -67,6 +95,8 @@ class _NotesManagerState extends State<NotesManager> {
               (index) => CardNote(
                 note: state.notes[index],
                 icon: Icons.info,
+                onPressed: () => BlocProvider.of<NotesManagerCubit>(context)
+                    .getNoteById(state.notes[index].id!),
               ),
             ),
           ],
