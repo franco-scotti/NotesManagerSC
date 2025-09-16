@@ -51,6 +51,8 @@ class CardNote extends StatelessWidget {
                       onPrimaryButtonPressed: () async {
                         await BlocProvider.of<NotesManagerCubit>(context)
                             .removeNote(note.id!);
+                        BlocProvider.of<NotesManagerCubit>(context)
+                            .getAllNotes();
                         Navigator.pop(context);
                         ShowSnackbar.show(context,
                             message: 'Nota Deletada com Sucesso',

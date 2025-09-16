@@ -110,6 +110,7 @@ class _HeaderViewNoteState extends State<HeaderViewNote> {
         message: 'Nota Atualizada com Sucesso!',
         semanticType: SemanticType.success,
       );
+      context.read<NotesManagerCubit>().getAllNotes();
     } else {
       if (!context.mounted) return;
 

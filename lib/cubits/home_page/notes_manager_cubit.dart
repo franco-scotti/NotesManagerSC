@@ -34,7 +34,6 @@ class NotesManagerCubit extends Cubit<NotesManagerState> {
     );
     var result = await repository.updateNote(updatedNote);
     emit(state.copyWith(selectedNote: updatedNote, isEditTitle: false));
-    getAllNotes();
     return result;
   }
 
@@ -47,7 +46,6 @@ class NotesManagerCubit extends Cubit<NotesManagerState> {
     );
     var result = repository.updateNote(updatedNote);
     emit(state.copyWith(selectedNote: updatedNote, isEditDescription: false));
-    getAllNotes();
     return result;
   }
 
@@ -58,14 +56,12 @@ class NotesManagerCubit extends Cubit<NotesManagerState> {
 
   Future<void> getNoteById(int id) async {
     emit(state.copyWith(status: StatusBaseEnum.loading));
-    await Future.delayed(const Duration(seconds: 1));
     var note = await repository.getNoteById(id);
     emit(state.copyWith(selectedNote: note, status: StatusBaseEnum.success));
   }
 
   Future<void> addNote(Note note) async {
     await repository.addNote(note);
-    await getAllNotes();
   }
 
   Future<int> updateNote(Note note) async {
@@ -74,6 +70,5 @@ class NotesManagerCubit extends Cubit<NotesManagerState> {
 
   Future<void> removeNote(int id) async {
     await repository.deleteNote(id);
-    await getAllNotes();
   }
 }

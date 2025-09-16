@@ -71,23 +71,19 @@ class _ViewNoteState extends State<ViewNote> {
                     children: [
                       HeaderViewNote(),
                       SizedBox(height: 30),
-                      TextField(
-                        controller: observationController,
-                        decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: const BorderSide(
-                              color: Colors.grey,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: const BorderSide(
-                              color: AppColors.primary,
+                      Expanded(
+                        child: TextField(
+                          controller: observationController,
+                          expands: true,
+                          maxLines: null, // necessário com expands
+                          textAlignVertical: TextAlignVertical.top,
+
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
                             ),
                           ),
                         ),
-                        maxLines: 15,
                       ),
                       const SizedBox(height: 20),
                       Row(
@@ -108,6 +104,8 @@ class _ViewNoteState extends State<ViewNote> {
                                   await BlocProvider.of<NotesManagerCubit>(
                                           context)
                                       .removeNote(state.selectedNote.id!);
+                                  BlocProvider.of<NotesManagerCubit>(context)
+                                      .getAllNotes();
                                   Navigator.pop(context);
                                   Navigator.pop(context);
                                   ShowSnackbar.show(context,
