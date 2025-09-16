@@ -75,9 +75,8 @@ class _ViewNoteState extends State<ViewNote> {
                         child: TextField(
                           controller: observationController,
                           expands: true,
-                          maxLines: null, // necessário com expands
+                          maxLines: null,
                           textAlignVertical: TextAlignVertical.top,
-
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(16),
