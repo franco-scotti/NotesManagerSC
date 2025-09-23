@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scotti_seguros/common/functions/show_snackbar.dart';
 import 'package:scotti_seguros/consts/app_colors.dart';
@@ -16,86 +17,112 @@ class HeaderViewNote extends StatefulWidget {
 }
 
 class _HeaderViewNoteState extends State<HeaderViewNote> {
+  late TextEditingController _titleController;
+  late TextEditingController _descriptionController;
+
+  @override
+  void initState() {
+    final selectedNote = context.read<NotesManagerCubit>().state.selectedNote;
+    _titleController = TextEditingController(text: selectedNote.title);
+    _descriptionController =
+        TextEditingController(text: selectedNote.description);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NotesManagerCubit, NotesManagerState>(
       builder: (context, state) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                state.isEditTitle
-                    ? Expanded(
-                        child: TextField(
-                          autofocus: true,
-                          controller: TextEditingController(
-                              text: state.selectedNote.title),
-                          style: const TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold),
-                          onSubmitted: (newTitle) async {
-                            var result =
-                                await BlocProvider.of<NotesManagerCubit>(
-                                        context)
-                                    .updateTitle(newTitle);
-                            showSuccessSnakBar(result);
-                          },
+        return KeyboardListener(
+          focusNode: FocusNode()..requestFocus(),
+          onKeyEvent: (event) {
+            if (event is KeyDownEvent &&
+                event.logicalKey == LogicalKeyboardKey.escape) {
+              Navigator.pop(context);
+            }
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  state.isEditTitle
+                      ? Expanded(
+                          child: TextField(
+                            autofocus: true,
+                            controller: _titleController,
+                            style: const TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.bold),
+                          ),
+                        )
+                      : Expanded(
+                          child: Text(
+                            state.selectedNote.title,
+                            style: const TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.bold),
+                          ),
                         ),
-                      )
-                    : Expanded(
-                        child: Text(
-                          state.selectedNote.title,
-                          style: const TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold),
+                  const SizedBox(width: 10),
+                  IconButton(
+                    onPressed: () {
+                      BlocProvider.of<NotesManagerCubit>(context)
+                          .setIsEditingTitle(!state.isEditTitle);
+                    },
+                    icon: Icon(state.isEditTitle ? Icons.close : Icons.edit),
+                  ),
+                  if (state.isEditTitle)
+                    IconButton(
+                      onPressed: () async {
+                        var result =
+                            await BlocProvider.of<NotesManagerCubit>(context)
+                                .updateTitle(_titleController.text);
+                        showSuccessSnakBar(result);
+                      },
+                      icon: Icon(Icons.check),
+                    ),
+                ],
+              ),
+              const Divider(color: AppColors.secondary),
+              Row(
+                children: [
+                  state.isEditDescription
+                      ? Expanded(
+                          child: TextField(
+                            autofocus: true,
+                            controller: _descriptionController,
+                            style: const TextStyle(fontSize: 15),
+                          ),
+                        )
+                      : Expanded(
+                          child: Text(
+                            state.selectedNote.description,
+                            style: const TextStyle(fontSize: 15),
+                          ),
                         ),
-                      ),
-                const SizedBox(width: 10),
-                IconButton(
-                  onPressed: () {
-                    BlocProvider.of<NotesManagerCubit>(context)
-                        .setIsEditingTitle(!state.isEditTitle);
-                  },
-                  icon: Icon(state.isEditTitle ? Icons.close : Icons.edit),
-                ),
-              ],
-            ),
-            const Divider(color: AppColors.secondary),
-            Row(
-              children: [
-                state.isEditDescription
-                    ? Expanded(
-                        child: TextField(
-                          autofocus: true,
-                          controller: TextEditingController(
-                              text: state.selectedNote.description),
-                          style: const TextStyle(fontSize: 15),
-                          onSubmitted: (newdescription) async {
-                            var result =
-                                await BlocProvider.of<NotesManagerCubit>(
-                                        context)
-                                    .updateDescription(newdescription);
-                            showSuccessSnakBar(result);
-                          },
-                        ),
-                      )
-                    : Expanded(
-                        child: Text(
-                          state.selectedNote.description,
-                          style: const TextStyle(fontSize: 15),
-                        ),
-                      ),
-                const SizedBox(width: 10),
-                IconButton(
-                  onPressed: () {
-                    BlocProvider.of<NotesManagerCubit>(context)
-                        .setIsEditingDescription(!state.isEditDescription);
-                  },
-                  icon: Icon(getDescriptionIcon(
-                      state.selectedNote.description, state.isEditDescription)),
-                ),
-              ],
-            ),
-          ],
+                  const SizedBox(width: 10),
+                  IconButton(
+                    onPressed: () {
+                      BlocProvider.of<NotesManagerCubit>(context)
+                          .setIsEditingDescription(!state.isEditDescription);
+                    },
+                    icon: Icon(getDescriptionIcon(
+                        state.selectedNote.description,
+                        state.isEditDescription)),
+                  ),
+                  if (state.isEditDescription)
+                    IconButton(
+                      onPressed: () async {
+                        var result =
+                            await BlocProvider.of<NotesManagerCubit>(context)
+                                .updateDescription(_descriptionController.text);
+                        showSuccessSnakBar(result);
+                      },
+                      icon: Icon(Icons.check),
+                    ),
+                ],
+              ),
+            ],
+          ),
         );
       },
     );

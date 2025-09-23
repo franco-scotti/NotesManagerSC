@@ -39,21 +39,6 @@ class _NotesManagerState extends State<NotesManager> {
 
     return BlocConsumer<NotesManagerCubit, NotesManagerState>(
         listener: (context, state) {
-      // if (state.status == StatusBaseEnum.loading) {
-      //   showDialog(
-      //     context: context,
-      //     barrierDismissible: false,
-      //     builder: (_) => const Center(
-      //       child: CircularProgressIndicator(
-      //         strokeWidth: 6.0,
-      //         color: AppColors.secondary,
-      //       ),
-      //     ),
-      //   );
-      // } else {
-      //   Navigator.of(context, rootNavigator: true).maybePop();
-      // }
-
       if (state.status == StatusBaseEnum.success) {
         Navigator.push(
           context,
@@ -68,6 +53,7 @@ class _NotesManagerState extends State<NotesManager> {
       return Scaffold(
         backgroundColor: AppColors.primary,
         appBar: AppBar(
+          iconTheme: const IconThemeData(color: Colors.white),
           title: Center(
             child: Text(
               'Scotti Seguros',
@@ -75,12 +61,74 @@ class _NotesManagerState extends State<NotesManager> {
             ),
           ),
           backgroundColor: AppColors.primary,
-          leading: IconButton(
-            icon: Icon(
-              Icons.menu,
-              color: Colors.white,
-            ),
-            onPressed: () {},
+        ),
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.all(10),
+            children: [
+              if (state.notes.isEmpty) ...[
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
+                        ),
+                        children: [
+                          const TextSpan(
+                              text:
+                                  "Nenhuma nota cadastrada ainda.\nClique em "),
+                          TextSpan(
+                            text: "+",
+                            style: const TextStyle(
+                              color: AppColors.secondary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const TextSpan(text: " para adicionar uma!"),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ] else ...[
+                ...List.generate(
+                  state.notes.length,
+                  (i) => Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 2,
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+                    child: ListTile(
+                      leading: const Icon(Icons.sticky_note_2,
+                          color: AppColors.primary),
+                      title: Text(
+                        state.notes[i].title,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        state.notes[i].description.isNotEmpty
+                            ? state.notes[i].description
+                            : "Sem descrição",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      trailing:
+                          const Icon(Icons.chevron_right, color: Colors.grey),
+                      onTap: () {
+                        BlocProvider.of<NotesManagerCubit>(context)
+                            .getNoteById(state.notes[i].id!);
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ],
           ),
         ),
         body: GridView.count(
@@ -92,11 +140,11 @@ class _NotesManagerState extends State<NotesManager> {
             CardAddNew(),
             ...List.generate(
               state.notes.length,
-              (index) => CardNote(
-                note: state.notes[index],
+              (i) => CardNote(
+                note: state.notes[i],
                 icon: Icons.info,
                 onPressed: () => BlocProvider.of<NotesManagerCubit>(context)
-                    .getNoteById(state.notes[index].id!),
+                    .getNoteById(state.notes[i].id!),
               ),
             ),
           ],
