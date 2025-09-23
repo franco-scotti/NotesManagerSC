@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scotti_seguros/common/buttons/default_button.dart';
 import 'package:scotti_seguros/common/functions/show_dialog.dart';
@@ -35,132 +36,141 @@ class _ViewNoteState extends State<ViewNote> {
           "",
     );
 
-    return Scaffold(
-      backgroundColor: Color(0xFF414988),
-      appBar: AppBar(
-        title: Center(
-          child: Text(
-            'Scotti Seguros',
-            style: TextStyle(color: Colors.white),
+    return KeyboardListener(
+      focusNode: FocusNode()..requestFocus(),
+      onKeyEvent: (event) {
+        if (event is KeyDownEvent &&
+            event.logicalKey == LogicalKeyboardKey.escape) {
+          Navigator.pop(context);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Color(0xFF414988),
+        appBar: AppBar(
+          title: Center(
+            child: Text(
+              'Scotti Seguros',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          backgroundColor: AppColors.primary,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios_rounded,
+              color: Colors.white,
+            ),
+            onPressed: () => {Navigator.pop(context)},
           ),
         ),
-        backgroundColor: AppColors.primary,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios_rounded,
-            color: Colors.white,
-          ),
-          onPressed: () => {Navigator.pop(context)},
-        ),
-      ),
-      body: BlocBuilder<NotesManagerCubit, NotesManagerState>(
-        builder: (context, state) {
-          return Padding(
-            padding: EdgeInsets.all(20),
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      HeaderViewNote(),
-                      SizedBox(height: 30),
-                      Expanded(
-                        child: TextField(
-                          controller: observationController,
-                          expands: true,
-                          maxLines: null,
-                          textAlignVertical: TextAlignVertical.top,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
+        body: BlocBuilder<NotesManagerCubit, NotesManagerState>(
+          builder: (context, state) {
+            return Padding(
+              padding: EdgeInsets.all(20),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        HeaderViewNote(),
+                        SizedBox(height: 30),
+                        Expanded(
+                          child: TextField(
+                            controller: observationController,
+                            expands: true,
+                            maxLines: null,
+                            textAlignVertical: TextAlignVertical.top,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          DefaultButton(
-                            text: 'Deletar',
-                            backgroundColor: AppColors.errorDefault,
-                            onPressed: () => {
-                              ShowDialogBox.show(
-                                context,
-                                title: 'Deseja mesmo deletar?',
-                                message: 'Esta ação não pode ser revertida.',
-                                semanticType: SemanticType.success,
-                                primaryButtonText: 'Deletar',
-                                primaryButtonColor: AppColors.errorDefault,
-                                onPrimaryButtonPressed: () async {
-                                  await BlocProvider.of<NotesManagerCubit>(
-                                          context)
-                                      .removeNote(state.selectedNote.id!);
-                                  BlocProvider.of<NotesManagerCubit>(context)
-                                      .getAllNotes();
-                                  Navigator.pop(context);
-                                  Navigator.pop(context);
-                                  ShowSnackbar.show(context,
-                                      message: 'Nota Deletada com Sucesso',
-                                      semanticType: SemanticType.success);
-                                },
-                                secondaryButtonText: 'Cancelar',
-                                secondaryButtonColor: AppColors.primary,
-                                onSecondaryButtonPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              )
-                            },
-                          ),
-                          DefaultButton(
-                            text: 'Salvar',
-                            backgroundColor: AppColors.primary,
-                            onPressed: () async {
-                              var updatedNote = Note(
-                                  id: state.selectedNote.id,
-                                  title: state.selectedNote.title,
-                                  description: state.selectedNote.description,
-                                  observation: observationController.text);
-                              var result =
-                                  await BlocProvider.of<NotesManagerCubit>(
-                                          context)
-                                      .updateNote(updatedNote);
-                              if (result == 1) {
-                                if (!context.mounted) return;
-
-                                ShowSnackbar.show(
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            DefaultButton(
+                              text: 'Deletar',
+                              backgroundColor: AppColors.errorDefault,
+                              onPressed: () => {
+                                ShowDialogBox.show(
                                   context,
-                                  message: 'Nota Atualizada com Sucesso!',
+                                  title: 'Deseja mesmo deletar?',
+                                  message: 'Esta ação não pode ser revertida.',
                                   semanticType: SemanticType.success,
-                                );
-                              } else {
-                                if (!context.mounted) return;
+                                  primaryButtonText: 'Deletar',
+                                  primaryButtonColor: AppColors.errorDefault,
+                                  onPrimaryButtonPressed: () async {
+                                    await BlocProvider.of<NotesManagerCubit>(
+                                            context)
+                                        .removeNote(state.selectedNote.id!);
+                                    BlocProvider.of<NotesManagerCubit>(context)
+                                        .getAllNotes();
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                    ShowSnackbar.show(context,
+                                        message: 'Nota Deletada com Sucesso',
+                                        semanticType: SemanticType.success);
+                                  },
+                                  secondaryButtonText: 'Cancelar',
+                                  secondaryButtonColor: AppColors.primary,
+                                  onSecondaryButtonPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                )
+                              },
+                            ),
+                            DefaultButton(
+                              text: 'Salvar',
+                              backgroundColor: AppColors.primary,
+                              onPressed: () async {
+                                var updatedNote = Note(
+                                    id: state.selectedNote.id,
+                                    title: state.selectedNote.title,
+                                    description: state.selectedNote.description,
+                                    observation: observationController.text);
+                                var result =
+                                    await BlocProvider.of<NotesManagerCubit>(
+                                            context)
+                                        .updateNote(updatedNote);
+                                if (result == 1) {
+                                  if (!context.mounted) return;
 
-                                ShowSnackbar.show(
-                                  context,
-                                  message:
-                                      'Ocorreu um erro ao atualizar a nota.',
-                                  semanticType: SemanticType.error,
-                                );
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
+                                  ShowSnackbar.show(
+                                    context,
+                                    message: 'Nota Atualizada com Sucesso!',
+                                    semanticType: SemanticType.success,
+                                  );
+                                } else {
+                                  if (!context.mounted) return;
+
+                                  ShowSnackbar.show(
+                                    context,
+                                    message:
+                                        'Ocorreu um erro ao atualizar a nota.',
+                                    semanticType: SemanticType.error,
+                                  );
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
