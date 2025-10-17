@@ -1,16 +1,7 @@
-# scotti_seguros
+# Notes Manager
 
-A new Flutter project.
+Aplicativo desktop desenvolvido em flutter para gerenciar anotações de forma prática e eficiente.
 
-## Getting Started
+Gerenciador de notas que permite criar, salvar e organizar anotações diretamente no computador. O sistema foi construído em Flutter e utiliza um banco de dados local, dispensando a dependência de APIs externas.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Embora ainda haja bastante espaço para melhorias e novas funcionalidades, o aplicativo já está em uso e vem sendo aprimorado gradualmente
